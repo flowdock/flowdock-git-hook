@@ -15,6 +15,23 @@ describe "Git Payload Builder" do
     Flowdock::Git::Builder.new(@repo, "refs/tags/release-1.0", @before, @after).ref_name.should == "release-1.0"
   end
 
+  it "detects new branch and sets created=true in data" do
+    hash = Flowdock::Git::Builder.new(@repo, "refs/heads/master", "0000000000000000000000000000000000000000", @after).to_hash
+    hash[:created].should == true
+    hash[:deleted].should_not == true
+  end
+
+  it "detects deleted branch and sets deleted=true in data" do
+    hash = Flowdock::Git::Builder.new(@repo, "refs/heads/master", @before, "0000000000000000000000000000000000000000").to_hash
+    hash[:deleted].should == true
+    hash[:created].should_not == true
+  end
+
+  it "doesn't include commits in branch delete" do
+    hash = Flowdock::Git::Builder.new(@repo, "refs/heads/master", @before, "0000000000000000000000000000000000000000").to_hash
+    hash[:commits].should be_empty
+  end
+
   describe "data hash" do
     before :each do
       @repo.stub!(:path).and_return("/foo/bar/flowdock-git-hook/.git")

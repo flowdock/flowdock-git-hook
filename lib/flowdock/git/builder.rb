@@ -41,7 +41,13 @@ module Flowdock
           :repository => {
             :name => File.basename(Dir.pwd).sub(/\.git$/,'')
           }
-        }
+        }.merge(if @before == "0000000000000000000000000000000000000000"
+          {:created => true}
+        elsif @after == "0000000000000000000000000000000000000000"
+          {:deleted => true}
+        else
+          {}
+        end)
       end
 
       private
