@@ -1,4 +1,5 @@
 require "multi_json"
+require "net/https"
 
 require "flowdock/git/builder"
 
