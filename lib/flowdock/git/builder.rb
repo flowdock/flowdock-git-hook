@@ -11,7 +11,20 @@ module Flowdock
       end
 
       def commits
-        []
+        @repo.commits_between(@before, @after).map do |commit|
+          {
+            :id => commit.sha,
+            :message => commit.message,
+            :timestamp => commit.authored_date.iso8601,
+            :author => {
+              :name => commit.author.name,
+              :email => commit.author.email
+            },
+            :removed => filter(commit.diffs) { |d| d.deleted_file },
+            :added => filter(commit.diffs) { |d| d.new_file },
+            :modified => filter(commit.diffs) { |d| !d.deleted_file && !d.new_file }
+          }
+        end
       end
 
       def ref_name
@@ -29,6 +42,12 @@ module Flowdock
             :name => File.basename(Dir.pwd).sub(/\.git$/,'')
           }
         }
+      end
+
+      private
+
+      def filter(diffs)
+        diffs.select { |e| yield e }.map { |diff| diff.b_path }
       end
     end
   end
