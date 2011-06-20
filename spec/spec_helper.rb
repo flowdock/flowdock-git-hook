@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
+require 'webmock/rspec'
 require 'flowdock-git-hook'
 
 # Requires supporting files with custom matchers and macros, etc,
@@ -8,5 +9,4 @@ require 'flowdock-git-hook'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
-  
 end
