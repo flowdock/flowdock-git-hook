@@ -1,5 +1,7 @@
 require "multi_json"
 
+require "flowdock/git/builder"
+
 module Flowdock
   class Git
     class TokenError < StandardError; end
@@ -32,6 +34,12 @@ module Flowdock
 
     def payload
       # Payload generation goes here
+    end
+
+    private
+
+    def repo
+      @repo ||= Grit::Repo.new(@options[:repo] || Dir.pwd)
     end
   end
 end

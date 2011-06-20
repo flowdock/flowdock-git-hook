@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+gem "grit", ">= 2.4.1"
 gem "multi_json"
 
 group :development do
