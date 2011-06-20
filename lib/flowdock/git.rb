@@ -15,7 +15,7 @@ module Flowdock
 
       @options = options
 
-      @token = options[:token] || raise(TokenError.new("Flowdock API token not found"))
+      @token = options[:token] || config["flowdock.token"] || raise(TokenError.new("Flowdock API token not found"))
     end
 
     def post
@@ -40,6 +40,10 @@ module Flowdock
 
     def repo
       @repo ||= Grit::Repo.new(@options[:repo] || Dir.pwd)
+    end
+
+    def config
+      @config ||= Grit::Config.new(repo)
     end
   end
 end

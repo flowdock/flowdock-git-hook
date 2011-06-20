@@ -7,6 +7,16 @@ describe "Flowdock Git Hook" do
     }.should raise_error(Flowdock::Git::TokenError)
   end
 
+  it "can read token from git config" do
+    Grit::Config.stub!(:new).and_return({
+      "flowdock.token" => "flowdock-token"
+    })
+
+    lambda {
+      Flowdock::Git.new("refs/heads/master", "random-hash", "random-hash")
+    }.should_not raise_error
+  end
+
   it "builds payload" do
     stub_request(:post, "https://api.flowdock.com/v1/git/flowdock-token")
     Flowdock::Git.new("refs/heads/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5", :token => "flowdock-token").post
