@@ -33,7 +33,7 @@ module Flowdock
     end
 
     def payload
-      # Payload generation goes here
+      Builder.new(repo, @ref, @from, @to).to_hash
     end
 
     private
