@@ -27,7 +27,7 @@ describe "Flowdock Git Hook" do
 
   describe "Tagging" do
     it "reads tags from initializer parameter" do
-      tags = Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token", :tags => ["foo", "bar"]).tags
+      tags = Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token", :tags => ["foo", "bar"]).send(:tags)
       tags.should include("foo", "bar")
     end
 
@@ -35,12 +35,12 @@ describe "Flowdock Git Hook" do
       Grit::Config.stub!(:new).and_return({
         "flowdock.tags" => "foo,bar"
       })
-      tags = Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token").tags
+      tags = Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token").send(:tags)
       tags.should include("foo", "bar")
     end
 
     it "encodes tags suitable for URI" do
-      Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token", :tags => "foo%bar").tags.should include("foo%25bar")
+      Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token", :tags => "foo%bar").send(:tags).should include("foo%25bar")
     end
   end
 end

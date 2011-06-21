@@ -2,6 +2,7 @@ require "grit"
 
 module Flowdock
   class Git
+    # Class used to build Git payload
     class Builder
       def initialize(repo, ref, before, after)
         @repo = repo

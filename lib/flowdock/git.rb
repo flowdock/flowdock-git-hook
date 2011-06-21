@@ -19,6 +19,7 @@ module Flowdock
       @token = options[:token] || config["flowdock.token"] || raise(TokenError.new("Flowdock API token not found"))
     end
 
+    # Send git push notification to Flowdock
     def post
       uri = URI.parse("#{API_ENDPOINT}/#{([@token] + tags).join('+')}")
       req = Net::HTTP::Post.new(uri.path)
@@ -33,10 +34,9 @@ module Flowdock
       http.start { |http| http.request(req) }
     end
 
-    def payload
-      Builder.new(repo, @ref, @from, @to).to_hash
-    end
+    private
 
+    # Flowdock tags attached to the push notification
     def tags
       if @options[:tags]
         @options[:tags]
@@ -47,7 +47,9 @@ module Flowdock
       end
     end
 
-    private
+    def payload
+      Builder.new(repo, @ref, @from, @to).to_hash
+    end
 
     def repo
       @repo ||= Grit::Repo.new(@options[:repo] || Dir.pwd)

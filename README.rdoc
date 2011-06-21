@@ -1,19 +1,65 @@
 = Flowdock Git Hook
 
-Git Post-Receive hook for Flowdock
+Git Post-Receive hook for Flowdock[http://flowdock.com]
 
-== Contributing to flowdock-git-hook
+== Installation
 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+First, you need to install this gem. You need to have Ruby 1.8.6 and Rubygems installed in your system.
 
-== Copyright
+  gem install flowdock-git-hook
 
-Copyright (c) 2011 Ville Lautanala. See LICENSE.txt for
-further details.
+Then, download the post-receive hook file to the hooks directory and make it executable
 
+  curl -o hooks/post-receive http://github.com/flowdock/flowdock-git-hook/raw/master/post-receive
+  chmod +x hooks/post-receive
+
+Configure your Flow API tokens to git configuration
+
+  git config flowdock.token <Flow API token>
+
+After this, you should get updates from your git repo every time you push to it.
+
+== Advanced usage
+
+The git hook allows Flowdock tags to be attached to push messages. If you only need static tags, e.g. git repo name as tag, this can be configured in git config:
+
+  git config flowdock.tags git,push
+
+For programmatic control over tagging, you can change how the hook is called in post-receive hook file.
+
+  Flowdock::Git.new(ref, before, after, :tags => ["git", "push"])
+
+Note that you can also define token as parameter allowing multiple Flows to be notified.
+
+  Flowdock::Git.new(ref, before, after, :token => "flow-token")
+  Flowdock::Git.new(ref, before, after, :token => "another-flow")
+
+== Example data
+
+The hook uses {GitHub webhook}[http://help.github.com/post-receive-hooks/] format.
+
+  payload {
+    "after": "122b95a8808ea0cf708fb43b400a377c25c35d7f",
+    "before": "2a445d1d348d9d45217cb9c89c12b67d3767ce42",
+    "commits": [
+      {
+        "added": [],
+        "author": {
+          "email": "raine.virta@nodeta.fi",
+          "name": "Raine Virta"
+        },
+        "id": "122b95a8808ea0cf708fb43b400a377c25c35d7f",
+        "message": "yeah!",
+        "modified": [
+          "TEST_FILE"
+        ],
+        "removed": [],
+        "timestamp": "2010-08-11T13:46:39+03:00"
+      }
+    ],
+    "ref": "refs\/heads\/master",
+    "ref_name": "master",
+    "repository": {
+      "name": "testrepo"
+    }
+  }
