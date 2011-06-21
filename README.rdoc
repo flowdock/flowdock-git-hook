@@ -6,16 +6,16 @@ Git Post-Receive hook for Flowdock[http://flowdock.com]
 
 First, you need to install this gem. You need to have Ruby 1.8.6 and Rubygems installed in your system.
 
-  gem install flowdock-git-hook
+  $ gem install flowdock-git-hook
 
 Then, download the post-receive hook file to the hooks directory and make it executable
 
-  wget -O hooks/post-receive https://raw.github.com/flowdock/flowdock-git-hook/master/post-receive
-  chmod +x hooks/post-receive
+  $ wget -O hooks/post-receive https://raw.github.com/flowdock/flowdock-git-hook/master/post-receive
+  $ chmod +x hooks/post-receive
 
 Configure your Flow API tokens to git configuration
 
-  git config flowdock.token <Flow API token>
+  $ git config flowdock.token <Flow API token>
 
 After this, you should get updates from your git repo every time you push to it.
 
@@ -23,7 +23,7 @@ After this, you should get updates from your git repo every time you push to it.
 
 The git hook allows Flowdock tags to be attached to push messages. If you only need static tags, e.g. git repo name as tag, this can be configured in git config:
 
-  git config flowdock.tags git,push
+  $ git config flowdock.tags git,push
 
 For programmatic control over tagging, you can change how the hook is called in post-receive hook file.
 
