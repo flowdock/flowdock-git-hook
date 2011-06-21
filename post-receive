@@ -1,0 +1,6 @@
+#!/usr/bin/ruby -w
+require 'rubygems'
+require 'flowdock-git-hook'
+
+before, after, ref = gets.split
+Flowdock::Git.new(ref, before, after).post
