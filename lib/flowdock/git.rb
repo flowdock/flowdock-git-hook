@@ -34,6 +34,18 @@ module Flowdock
       http.start { |http| http.request(req) }
     end
 
+    # Create and post notification in background process. Avoid blocking the push notification.
+    def background_post
+      pid = Process.fork
+      if pid.nil?
+        Grit::Git.with_timeout(600) do
+          post # Child
+        end
+      else
+        Process.detach(pid) # Parent
+      end
+    end
+
     private
 
     # Flowdock tags attached to the push notification
