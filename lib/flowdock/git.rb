@@ -1,5 +1,6 @@
 require "multi_json"
 require "net/https"
+require "cgi"
 
 require "flowdock/git/builder"
 
@@ -7,7 +8,6 @@ module Flowdock
   class Git
     class TokenError < StandardError; end
     API_ENDPOINT = "https://api.flowdock.com/v1/git"
-
 
     def initialize(ref, from, to, options = {})
       @ref = ref
@@ -20,7 +20,7 @@ module Flowdock
     end
 
     def post
-      uri = URI.parse("#{API_ENDPOINT}/#{@token}")
+      uri = URI.parse("#{API_ENDPOINT}/#{([@token] + tags).join('+')}")
       req = Net::HTTP::Post.new(uri.path)
       req.set_form_data(:payload => MultiJson.encode(payload))
       http = Net::HTTP.new(uri.host, uri.port)
@@ -35,6 +35,16 @@ module Flowdock
 
     def payload
       Builder.new(repo, @ref, @from, @to).to_hash
+    end
+
+    def tags
+      if @options[:tags]
+        @options[:tags]
+      else
+        config["flowdock.tags"].to_s.split(",")
+      end.map do |t|
+        CGI.escape(t)
+      end
     end
 
     private
