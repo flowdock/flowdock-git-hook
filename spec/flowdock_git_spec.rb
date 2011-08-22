@@ -19,7 +19,7 @@ describe "Flowdock Git Hook" do
 
   it "builds payload" do
     stub_request(:post, "https://api.flowdock.com/v1/git/flowdock-token")
-    Flowdock::Git.new("refs/heads/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5", :token => "flowdock-token").post
+    Flowdock::Git.post("refs/heads/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5", :token => "flowdock-token")
     a_request(:post, "https://api.flowdock.com/v1/git/flowdock-token").with { |req|
       req.body.match(/7e32af569ba794b0b1c5e4c38fef1d4e2e56be51/)
     }.should have_been_made
@@ -47,18 +47,15 @@ end
 
 describe "Flowdock Git Hook", "HTTP Post" do
   before :each do
-    @notifier = Flowdock::Git.new("origin/refs/master", "random-hash", "random-hash", :token => "flowdock-token", :tags => ["foo", "bar"])
-    @notifier.stub(:payload) { {} }
+    Flowdock::Git.post("origin/refs/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5", :token => "flowdock-token", :tags => ["foo", "bar"])
     stub_request(:post, "https://api.flowdock.com/v1/git/flowdock-token+foo+bar")
   end
 
   it "posts to api.flowdock.com" do
-    @notifier.post
     a_request(:post, "https://api.flowdock.com/v1/git/flowdock-token+foo+bar").should have_been_made
   end
 
   it "sends payload encoded as JSON" do
-    @notifier.post
     a_request(:post, "https://api.flowdock.com/v1/git/flowdock-token+foo+bar").with(:body => {:payload => "{}"}).should have_been_made
   end
 end

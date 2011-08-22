@@ -9,6 +9,16 @@ module Flowdock
     class TokenError < StandardError; end
     API_ENDPOINT = "https://api.flowdock.com/v1/git"
 
+    class << self
+      def self.post(ref, from, to, options = {})
+        Git.new(ref, from, to, options).post
+      end
+
+      def self.background_post(ref, from, to, options = {})
+        Git.new(ref, from, to, options).background_post
+      end
+    end
+
     def initialize(ref, from, to, options = {})
       @ref = ref
       @from = from

@@ -3,4 +3,4 @@ require 'rubygems'
 require 'flowdock-git-hook'
 
 before, after, ref = gets.split
-Flowdock::Git.new(ref, before, after).background_post
+Flowdock::Git.background_post(ref, before, after)
