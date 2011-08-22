@@ -4,7 +4,7 @@ describe "Git Payload Builder" do
   before :each do
     @repo = Grit::Repo.new(".")
     @before = "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51"
-    @after = "a1a94ba4bfa5f855676066861604b8edae1a20f5"
+    @after = "a66d3ce668ae6f2a42d54d811962724200d5b32b"
   end
 
   it "parses ref name from head" do

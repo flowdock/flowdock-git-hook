@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Flowdock Git Hook" do
   it "raises error if git token is not defined" do
     lambda {
-      Flowdock::Git.new("refs/heads/master", "random-hash", "random-hash")
+      Flowdock::Git.new
     }.should raise_error(Flowdock::Git::TokenError)
   end
 
@@ -13,7 +13,7 @@ describe "Flowdock Git Hook" do
     })
 
     lambda {
-      Flowdock::Git.new("refs/heads/master", "random-hash", "random-hash")
+      Flowdock::Git.new
     }.should_not raise_error
   end
 
@@ -27,7 +27,7 @@ describe "Flowdock Git Hook" do
 
   describe "Tagging" do
     it "reads tags from initializer parameter" do
-      tags = Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token", :tags => ["foo", "bar"]).send(:tags)
+      tags = Flowdock::Git.new(:token => "flowdock-token", :tags => ["foo", "bar"]).send(:tags)
       tags.should include("foo", "bar")
     end
 
@@ -35,20 +35,20 @@ describe "Flowdock Git Hook" do
       Grit::Config.stub!(:new).and_return({
         "flowdock.tags" => "foo,bar"
       })
-      tags = Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token").send(:tags)
+      tags = Flowdock::Git.new(:token => "flowdock-token").send(:tags)
       tags.should include("foo", "bar")
     end
 
     it "encodes tags suitable for URI" do
-      Flowdock::Git.new("ref", "before", "after", :token => "flowdock-token", :tags => "foo%bar").send(:tags).should include("foo%25bar")
+      Flowdock::Git.new(:token => "flowdock-token", :tags => "foo%bar").send(:tags).should include("foo%25bar")
     end
   end
 end
 
 describe "Flowdock Git Hook", "HTTP Post" do
   before :each do
-    Flowdock::Git.post("origin/refs/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5", :token => "flowdock-token", :tags => ["foo", "bar"])
     stub_request(:post, "https://api.flowdock.com/v1/git/flowdock-token+foo+bar")
+    Flowdock::Git.post("origin/refs/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5", :token => "flowdock-token", :tags => ["foo", "bar"])
   end
 
   it "posts to api.flowdock.com" do
@@ -56,6 +56,7 @@ describe "Flowdock Git Hook", "HTTP Post" do
   end
 
   it "sends payload encoded as JSON" do
-    a_request(:post, "https://api.flowdock.com/v1/git/flowdock-token+foo+bar").with(:body => {:payload => "{}"}).should have_been_made
+    payload = MultiJson.encode(Flowdock::Git::Builder.new(Grit::Repo.new("."), "origin/refs/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5").to_hash)
+    a_request(:post, "https://api.flowdock.com/v1/git/flowdock-token+foo+bar").with(:body => {:payload => payload}).should have_been_made
   end
 end
