@@ -27,12 +27,12 @@ The git hook allows Flowdock tags to be attached to push messages. If you only n
 
 For programmatic control over tagging, you can change how the hook is called in post-receive hook file.
 
-  Flowdock::Git.new(ref, before, after, :tags => ["git", "push"])
+  Flowdock::Git.background_post(ref, before, after, :tags => ["git", "push"])
 
 Note that you can also define token as parameter allowing multiple Flows to be notified.
 
-  Flowdock::Git.new(ref, before, after, :token => "flow-token")
-  Flowdock::Git.new(ref, before, after, :token => "another-flow")
+  Flowdock::Git.background_post(ref, before, after, :token => "flow-token")
+  Flowdock::Git.background_post(ref, before, after, :token => "another-flow")
 
 == Example data
 
