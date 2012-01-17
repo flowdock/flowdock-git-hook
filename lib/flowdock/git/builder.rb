@@ -33,7 +33,7 @@ module Flowdock
       end
 
       def to_hash
-        {
+        encode({
           :before   => @before,
           :after    => @after,
           :ref      => @ref,
@@ -42,7 +42,7 @@ module Flowdock
           :repository => {
             :name => File.basename(Dir.pwd).sub(/\.git$/,'')
           }
-        }.merge(if @before == "0000000000000000000000000000000000000000"
+        }).merge(if @before == "0000000000000000000000000000000000000000"
           {:created => true}
         elsif @after == "0000000000000000000000000000000000000000"
           {:deleted => true}
@@ -55,6 +55,29 @@ module Flowdock
 
       def filter(diffs)
         diffs.select { |e| yield e }.map { |diff| diff.b_path }
+      end
+
+      # This only works on Ruby 1.9
+      def encode_as_utf8(obj)
+        if obj.is_a? Hash
+          obj.each_pair do |key, val|
+            encode_as_utf8(val)
+          end
+        elsif obj.is_a?(Array)
+          obj.each do |val|
+            encode_as_utf8(val)
+          end
+        elsif obj.is_a?(String) && obj.encoding != Encoding::UTF_8
+          if !obj.force_encoding("UTF-8").valid_encoding?
+            obj.force_encoding("ISO-8859-1").encode!(Encoding::UTF_8, :invalid => :replace, :undef => :replace)
+          end
+        end
+        obj
+      end
+
+      def encode(hash)
+        return hash unless "".respond_to? :encode
+        encode_as_utf8(hash)
       end
     end
   end

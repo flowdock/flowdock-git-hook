@@ -1,3 +1,4 @@
+# encoding: utf-8
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Git Payload Builder" do
@@ -36,6 +37,48 @@ describe "Git Payload Builder" do
     before :each do
       @repo.stub!(:path).and_return("/foo/bar/flowdock-git-hook/.git")
       @hash = Flowdock::Git::Builder.new(@repo, "refs/heads/master", @before, @after).to_hash
+    end
+
+    if RUBY_VERSION > '1.9'
+      it "properly sets encoding for UTF-8 content" do
+        builder = Flowdock::Git::Builder.new(@repo, "refs/heads/master", @before, "0000000000000000000000000000000000000000")
+        builder.stub(:commits).and_return([
+          {
+            :id => "0000000000000000000000000000000000000001",
+            :message => "This message contains UTF-8: ö".force_encoding("ASCII-8BIT"),
+            :timestamp => Time.now.iso8601,
+            :author => {
+              :name => "Föö Bär".force_encoding("ASCII-8BIT"),
+              :email => "foo@example.com"
+            },
+            :removed => [],
+            :added => [],
+            :modified => []
+          }
+        ])
+        builder.to_hash[:commits][0][:message].encoding.should eq(Encoding::UTF_8)
+        builder.to_hash[:commits][0][:message].should == "This message contains UTF-8: ö"
+      end
+
+      it "encodes ISO-8859-1 to UTF-8" do
+        builder = Flowdock::Git::Builder.new(@repo, "refs/heads/master", @before, "0000000000000000000000000000000000000000")
+        builder.stub(:commits).and_return([
+          {
+            :id => "0000000000000000000000000000000000000001",
+            :message => "This message contains UTF-8: ö".encode("ISO-8859-1").force_encoding("ASCII-8BIT"),
+            :timestamp => Time.now.iso8601,
+            :author => {
+              :name => "Föö Bär".encode("ISO-8859-1").force_encoding("ASCII-8BIT"),
+              :email => "foo@example.com"
+            },
+            :removed => [],
+            :added => [],
+            :modified => []
+          }
+        ])
+        builder.to_hash[:commits][0][:author][:name].encoding.should eq(Encoding::UTF_8)
+        builder.to_hash[:commits][0][:author][:name].should == "Föö Bär"
+      end
     end
 
     it "contains before" do

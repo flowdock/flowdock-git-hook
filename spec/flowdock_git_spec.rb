@@ -17,6 +17,14 @@ describe "Flowdock Git Hook" do
     }.should_not raise_error
   end
 
+  it "encodes content as UTF-8" do
+    @repo = Grit::Repo.new(".")
+    @before = "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51"
+    @after = "a66d3ce668ae6f2a42d54d811962724200d5b32b"
+    @repo.stub!(:path).and_return("/foo/bar/flowdock-git-hook/.git")
+    @hash = Flowdock::Git::Builder.new(@repo, "refs/heads/master", @before, @after).to_hash
+  end
+
   it "builds payload" do
     stub_request(:post, "https://api.flowdock.com/v1/git/flowdock-token")
     Flowdock::Git.post("refs/heads/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5", :token => "flowdock-token")
