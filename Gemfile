@@ -9,4 +9,5 @@ group :development do
   gem "jeweler", "~> 1.6.2"
   gem "rcov", ">= 0"
   gem "webmock", ">= 1.6.4"
+  gem "jruby-openssl", :platforms => :jruby, :require => false
 end
