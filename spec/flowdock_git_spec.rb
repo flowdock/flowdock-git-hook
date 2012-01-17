@@ -40,7 +40,7 @@ describe "Flowdock Git Hook" do
     end
 
     it "encodes tags suitable for URI" do
-      Flowdock::Git.new(:token => "flowdock-token", :tags => "foo%bar").send(:tags).should include("foo%25bar")
+      Flowdock::Git.new(:token => "flowdock-token", :tags => ["foo%bar"]).send(:tags).should include("foo%25bar")
     end
   end
 end
