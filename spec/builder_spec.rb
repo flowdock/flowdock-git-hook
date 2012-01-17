@@ -18,14 +18,14 @@ describe "Git Payload Builder" do
 
   it "detects new branch and sets created=true in data" do
     hash = Flowdock::Git::Builder.new(@repo, "refs/heads/master", "0000000000000000000000000000000000000000", @after).to_hash
-    hash[:created].should == true
-    hash[:deleted].should_not == true
+    hash[:created].should eq(true)
+    hash[:deleted].should_not eq(true)
   end
 
   it "detects deleted branch and sets deleted=true in data" do
     hash = Flowdock::Git::Builder.new(@repo, "refs/heads/master", @before, "0000000000000000000000000000000000000000").to_hash
-    hash[:deleted].should == true
-    hash[:created].should_not == true
+    hash[:deleted].should eq(true)
+    hash[:created].should_not eq(true)
   end
 
   it "doesn't include commits in branch delete" do
@@ -103,8 +103,8 @@ describe "Git Payload Builder" do
       end
 
       it "has commit author information" do
-        @hash[:commits].first[:author][:name].should == "Ville Lautanala"
-        @hash[:commits].first[:author][:email].should == "lautis@gmail.com"
+        @hash[:commits].first[:author][:name].should eq("Ville Lautanala")
+        @hash[:commits].first[:author][:email].should eq("lautis@gmail.com")
       end
 
       it "has commit id" do
