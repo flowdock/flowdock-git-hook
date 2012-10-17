@@ -21,11 +21,11 @@ After this, you should get updates from your git repo every time you push to it.
 
 == Commit URLs
 
-Commit SHAs links in the Team Inbox of Flowdock can be made clickable to view the change on the web. To configure the URL for viewing commits, configure a `commit-url-pattern`:
+Commit SHAs links in the Team Inbox of Flowdock can be made clickable to view the change on the web. To configure the URL for viewing commits, configure a <tt>commit-url-pattern</tt>:
 
   $ config flowdock.commit-url-pattern "http://example.com/mygitviewer/commits/%s"
 
-The %s will be replaced with the commit SHA.
+The <tt>%s</tt> will be replaced with the commit SHA.
 
 Example for Redmine:
 
