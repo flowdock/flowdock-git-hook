@@ -24,13 +24,22 @@ module Flowdock
     def initialize(options = {})
       @options = options
       @token = options[:token] || config["flowdock.token"] || raise(TokenError.new("Flowdock API token not found"))
+      @commit_url = config["flowdock.commit-url-pattern"] || nil
     end
 
     # Send git push notification to Flowdock
     def post(data)
       uri = URI.parse("#{API_ENDPOINT}/#{([@token] + tags).join('+')}")
       req = Net::HTTP::Post.new(uri.path)
-      req.set_form_data(:payload => MultiJson.encode(data.to_hash))
+
+      payload_hash = data.to_hash
+      if @commit_url
+        payload_hash[:commits].each do |commit|
+          commit[:url] = @commit_url % commit[:id]
+        end
+      end
+
+      req.set_form_data(:payload => MultiJson.encode(payload_hash))
       http = Net::HTTP.new(uri.host, uri.port)
 
       if uri.scheme == 'https'

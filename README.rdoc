@@ -19,6 +19,20 @@ Configure your Flow API tokens to git configuration
 
 After this, you should get updates from your git repo every time you push to it.
 
+== Commit URLs
+
+Commit SHAs links in the Team Inbox of Flowdock can be made clickable to view the change on the web. To configure the URL for viewing commits, configure a `commit-url-pattern`:
+
+  $ config flowdock.commit-url-pattern "http://example.com/mygitviewer/commits/%s"
+
+The %s will be replaced with the commit SHA.
+
+Example for Redmine:
+
+  $ git config flowdock.commit-url-pattern "http://developer.example.com/projects/myproject/repository/revisions/%s"
+
+Replace 'myproject' with the project the Git repository is associated with.
+
 == Advanced usage
 
 The git hook allows Flowdock tags to be attached to push messages. If you only need static tags, e.g. git repo name as tag, this can be configured in git config:
