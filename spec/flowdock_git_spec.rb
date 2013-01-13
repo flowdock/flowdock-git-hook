@@ -33,6 +33,22 @@ describe "Flowdock Git Hook" do
     }.should have_been_made
   end
 
+  it "builds payload with repo url, diff url and commit urls" do
+    Grit::Config.stub!(:new).and_return({
+      "flowdock.token" => "flowdock-token",
+      "flowdock.repository-url" => "http://www.example.com",
+      "flowdock.diff-url-pattern" => "http://www.example.com/compare/%s...%s",
+      "flowdock.commit-url-pattern" => "http://www.example.com/commit/%s"
+    })
+    stub_request(:post, "https://api.flowdock.com/v1/git/flowdock-token")
+    Flowdock::Git.post("refs/heads/master", "7e32af569ba794b0b1c5e4c38fef1d4e2e56be51", "a1a94ba4bfa5f855676066861604b8edae1a20f5", :token => "flowdock-token")
+    a_request(:post, "https://api.flowdock.com/v1/git/flowdock-token").with { |req|
+      body = CGI.unescape(req.body)
+      body.match("http://www.example.com/") &&
+      body.match("http://www.example.com/compare/7e32af569ba794b0b1c5e4c38fef1d4e2e56be51...a1a94ba4bfa5f855676066861604b8edae1a20f5")
+    }.should have_been_made
+  end
+
   describe "Tagging" do
     it "reads tags from initializer parameter" do
       tags = Flowdock::Git.new(:token => "flowdock-token", :tags => ["foo", "bar"]).send(:tags)
