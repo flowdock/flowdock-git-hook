@@ -21,7 +21,7 @@ After this, you should get updates from your git repo every time you push to it.
 
 == Configuration
 
-Service specific instructions for [GitLab](https://github.com/flowdock/flowdock-git-hook/wiki/Gitlab) and [Redmine](https://github.com/flowdock/flowdock-git-hook/wiki/Redmine) can be found in [Wiki](https://github.com/flowdock/flowdock-git-hook/wiki).
+Service specific instructions for GitLab[https://github.com/flowdock/flowdock-git-hook/wiki/Gitlab] and Redmine[https://github.com/flowdock/flowdock-git-hook/wiki/Redmine] can be found in Wiki[https://github.com/flowdock/flowdock-git-hook/wiki].
 
 === Repository URL
 
