@@ -21,39 +21,27 @@ After this, you should get updates from your git repo every time you push to it.
 
 == Configuration
 
+Service specific instructions for [GitLab](https://github.com/flowdock/flowdock-git-hook/wiki/Gitlab) and [Redmine](https://github.com/flowdock/flowdock-git-hook/wiki/Redmine) can be found in [Wiki](https://github.com/flowdock/flowdock-git-hook/wiki).
+
 === Repository URL
 
 Each Team Inbox item sent from the post-receive hook can link back to the repository. To configure the URL for the repository, configure a <tt>repository-url</tt>:
 
-Example for Gitlab:
-
-$ config flowdock.repository-url "http://demo.gitlabhq.com/gitlab/gitlab-recipes"
+  $ git config flowdock.repository-url "http://example.com/mygitviewer/repo"
 
 === Commit URLs
 
 Commit SHAs links in the Team Inbox of Flowdock can be made clickable to view the change on the web. To configure the URL for viewing commits, configure a <tt>commit-url-pattern</tt>:
 
-  $ config flowdock.commit-url-pattern "http://example.com/mygitviewer/commits/%s"
+  $ git config flowdock.commit-url-pattern "http://example.com/mygitviewer/commits/%s"
 
 The <tt>%s</tt> will be replaced with the commit SHA.
-
-Example for Redmine:
-
-  $ git config flowdock.commit-url-pattern "http://developer.example.com/projects/myproject/repository/revisions/%s"
-
-Replace 'myproject' with the project the Git repository is associated with.
-
-Example for Gitlab:
-
-$ config flowdock.diff-url-pattern "http://demo.gitlabhq.com/gitlab/gitlab-recipes/commit/%s"
 
 === Diff URL
 
 Commit messages in Team Inbox can have a action for viewing the commit diff. To enable the Diff action for comparing commits, configure a <tt>diff-url-pattern</tt>:
 
-Example for Gitlab:
-
-$ config flowdock.diff-url-pattern "http://demo.gitlabhq.com/gitlab/gitlab-recipes/compare/%s...%s"
+   $ gitconfig flowdock.diff-url-pattern "http://example.com/mygitviewer/compare/%s...%s"
 
 == Advanced usage
 
