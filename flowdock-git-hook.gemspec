@@ -5,15 +5,15 @@
 
 Gem::Specification.new do |s|
   s.name = "flowdock-git-hook"
-  s.version = "0.3.0"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ville Lautanala"]
-  s.date = "2012-10-18"
+  s.date = "2013-01-13"
   s.email = "lautis@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.rdoc"
+    "README.md"
   ]
   s.files = [
     ".document",
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
     ".travis.yml",
     "Gemfile",
     "LICENSE.txt",
-    "README.rdoc",
+    "README.md",
     "Rakefile",
     "VERSION",
     "flowdock-git-hook.gemspec",
