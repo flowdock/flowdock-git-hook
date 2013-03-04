@@ -24,6 +24,7 @@ module Flowdock
     def initialize(options = {})
       @options = options
       @token = options[:token] || config["flowdock.token"] || raise(TokenError.new("Flowdock API token not found"))
+      @repo_name = config["flowdock.repository-name"] || nil
       @commit_url = config["flowdock.commit-url-pattern"] || nil
       @diff_url = config["flowdock.diff-url-pattern"] || nil
       @repo_url = config["flowdock.repository-url"] || nil
@@ -35,6 +36,9 @@ module Flowdock
       req = Net::HTTP::Post.new(uri.path)
 
       payload_hash = data.to_hash
+      if @repo_name
+        payload_hash[:repository][:name] = @repo_name
+      end
       if @repo_url
         payload_hash[:repository][:url] = @repo_url
       end
