@@ -71,7 +71,7 @@ module Flowdock
     end
 
     def repo
-      @repo ||= Grit::Repo.new(@options[:repo] || Dir.pwd)
+      @repo ||= Grit::Repo.new(@options[:repo] || Dir.pwd, {:is_bare => ENV['STASH_HOOK_CALLBACK'] ? true : false})
     end
 
     private
