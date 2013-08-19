@@ -58,6 +58,16 @@ Note that you can also define token as parameter allowing multiple Flows to be n
     Flowdock::Git.background_post(ref, before, after, :token => "flow-token")
     Flowdock::Git.background_post(ref, before, after, :token => "another-flow")
 
+### Usage as a library
+
+You can use the gem as a library from an application, without the need to set configuration parameters on the Git repository. You can pass the required parameters directly like so:
+
+    Flowdock::Git.post(ref, before, after, :token => "flow-token",
+                        :repo => "/path/to/repo",
+                        :repo_url => "http://example.com/mygitviewer/repo",
+                        :commit_url => "http://example.com/mygitviewer/repo/commit/%s",
+                        :diff_url => "http://example.com/mygitviewer/repo/compare/%s...%s")
+
 ## Example data
 
 The hook uses [GitHub webhook](http://help.github.com/post-receive-hooks/) format.

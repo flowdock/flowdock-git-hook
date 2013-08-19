@@ -24,9 +24,9 @@ module Flowdock
     def initialize(options = {})
       @options = options
       @token = options[:token] || config["flowdock.token"] || raise(TokenError.new("Flowdock API token not found"))
-      @commit_url = config["flowdock.commit-url-pattern"] || nil
-      @diff_url = config["flowdock.diff-url-pattern"] || nil
-      @repo_url = config["flowdock.repository-url"] || nil
+      @commit_url = options[:commit_url] || config["flowdock.commit-url-pattern"] || nil
+      @diff_url = options[:diff_url] || config["flowdock.diff-url-pattern"] || nil
+      @repo_url = options[:repo_url] || config["flowdock.repository-url"] || nil
     end
 
     # Send git push notification to Flowdock
