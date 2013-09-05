@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/flowdock/flowdock-git-hook"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "2.0.3"
+  s.rubygems_version = "2.0.5"
   s.summary = "Git Post-Receive hook for Flowdock"
 
   if s.respond_to? :specification_version then
