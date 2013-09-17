@@ -40,7 +40,7 @@ module Flowdock
           :commits  => commits,
           :ref_name => @ref.to_s.sub(/\Arefs\/(heads|tags)\//, ''),
           :repository => {
-            :name => File.basename(Dir.pwd).sub(/\.git$/,'')
+            :name => File.basename(@repo.path).sub(/\.git$/,'')
           }
         }).merge(if @before == "0000000000000000000000000000000000000000"
           {:created => true}
