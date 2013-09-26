@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "flowdock-git-hook"
-  s.version = "0.4.1"
+  s.version = "0.4.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ville Lautanala"]
-  s.date = "2013-09-05"
+  s.date = "2013-09-26"
   s.email = "lautis@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
