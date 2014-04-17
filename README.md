@@ -4,7 +4,7 @@ Git Post-Receive hook for [Flowdock](http://flowdock.com).
 
 ## Installation
 
-First, you need to install this gem. You need to have Ruby 1.8.6 and Rubygems installed in your system.
+First, you need to install this gem. You need to have Ruby and Rubygems installed in your system.
 
     $ gem install flowdock-git-hook
 
