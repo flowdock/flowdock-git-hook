@@ -23,6 +23,22 @@ After this, you should get updates from your git repo every time you push to it.
 
 Service specific instructions for [Gitlab](https://github.com/flowdock/flowdock-git-hook/wiki/Gitlab) and [Redmine](https://github.com/flowdock/flowdock-git-hook/wiki/Redmine) can be found in [Wiki](https://github.com/flowdock/flowdock-git-hook/wiki).
 
+### Permanent references
+
+By default each push to the `master` branch will generate a new thread containing just the commits that were pushed. Pushes to other branches or tags will be grouped to a single thread containing all the pushed commits. You can configure this behaviour by setting the `permanent-reference` git variable. The value of that configuration parameter should be a comma separated list of regular expressions.
+
+For example to create new threads for each push to the `master` branch and any branch starting with `with-regex-` do this
+
+    $ git config flowdock.permanent-references "refs/heads/master, refs/heads/with-regex-.*"
+
+
+### Repository name
+
+The repository name displayed in the inbox message can be set with `repository-name`
+
+    $ git config flowdock.repository-name "my repo"
+
+
 ### Repository URL
 
 Each Team Inbox item sent from the post-receive hook can link back to the repository. To configure the URL for the repository, configure a `repository-url`:
