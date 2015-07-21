@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem "grit", ">= 2.4.1"
 gem "multi_json"
-gem "flowdock", github: "flowdock/flowdock-api", branch: "t2"
+gem "flowdock", "~> 0.7"
 group :development do
   gem "byebug"
   gem "rdoc", ">= 2.4.2"
