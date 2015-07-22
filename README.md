@@ -57,7 +57,7 @@ The `%s` will be replaced with the commit SHA.
 
 Commit messages in Team Inbox can have a action for viewing the commit diff. To enable the Diff action for comparing commits, configure a `diff-url-pattern`:
 
-     $ gitconfig flowdock.diff-url-pattern "http://example.com/mygitviewer/compare/%s...%s"
+     $ git config flowdock.diff-url-pattern "http://example.com/mygitviewer/compare/%s...%s"
 
 ## Advanced usage
 
