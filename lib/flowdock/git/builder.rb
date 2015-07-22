@@ -22,11 +22,9 @@ module Flowdock
           },
           title: title,
           thread: @thread,
-          body: body,
+          body: body
         }
-        if @tags
-          hash[:tags] = @tags
-        end
+        hash[:tags] = @tags if @tags
         encode(hash)
       end
 
@@ -74,10 +72,9 @@ module Flowdock
       end
 
       def message_title
-          CGI.escape_html(first_line.strip)
+        CGI.escape_html(first_line.strip)
       end
     end
-
 
     # Class used to build Git payload
     class Builder
