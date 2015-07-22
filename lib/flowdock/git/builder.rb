@@ -1,60 +1,38 @@
 require "grit"
+require 'cgi'
+require "securerandom"
 
 module Flowdock
   class Git
-    # Class used to build Git payload
-    class Builder
-      def initialize(repo, ref, before, after)
-        @repo = repo
-        @ref = ref
-        @before = before
-        @after = after
-      end
-
-      def commits
-        @repo.commits_between(@before, @after).map do |commit|
-          {
-            :id => commit.sha,
-            :message => commit.message,
-            :timestamp => commit.authored_date.iso8601,
-            :author => {
-              :name => commit.author.name,
-              :email => commit.author.email
-            },
-            :removed => filter(commit.diffs) { |d| d.deleted_file },
-            :added => filter(commit.diffs) { |d| d.new_file },
-            :modified => filter(commit.diffs) { |d| !d.deleted_file && !d.new_file }
-          }
-        end
-      end
-
-      def ref_name
-        @ref.to_s.sub(/\Arefs\/(heads|tags)\//, '')
+    class Commit
+      def initialize(external_thread_id, thread, tags, commit)
+        @commit = commit
+        @external_thread_id = external_thread_id
+        @thread = thread
+        @tags = tags
       end
 
       def to_hash
-        encode({
-          :before   => @before,
-          :after    => @after,
-          :ref      => @ref,
-          :commits  => commits,
-          :ref_name => @ref.to_s.sub(/\Arefs\/(heads|tags)\//, ''),
-          :repository => {
-            :name => File.basename(@repo.path).sub(/\.git$/,'')
-          }
-        }).merge(if @before == "0000000000000000000000000000000000000000"
-          {:created => true}
-        elsif @after == "0000000000000000000000000000000000000000"
-          {:deleted => true}
-        else
-          {}
-        end)
+        hash = {
+          external_thread_id: @external_thread_id,
+          event: "activity",
+          author: {
+            name: @commit[:author][:name],
+            email: @commit[:author][:email]
+          },
+          title: title,
+          thread: @thread,
+          body: body
+        }
+        hash[:tags] = @tags if @tags
+        encode(hash)
       end
 
       private
 
-      def filter(diffs)
-        diffs.select { |e| yield e }.map { |diff| diff.b_path }
+      def encode(hash)
+        return hash unless "".respond_to? :encode
+        encode_as_utf8(hash)
       end
 
       # This only works on Ruby 1.9
@@ -72,12 +50,100 @@ module Flowdock
             obj.force_encoding("ISO-8859-1").encode!(Encoding::UTF_8, :invalid => :replace, :undef => :replace)
           end
         end
-        obj
       end
 
-      def encode(hash)
-        return hash unless "".respond_to? :encode
-        encode_as_utf8(hash)
+      def body
+        content = @commit[:message][first_line.size..-1]
+        content.strip! if content
+        "<pre>#{content}</pre>" unless content.empty?
+      end
+
+      def first_line
+        @first_line ||= (@commit[:message].split("\n")[0] || @commit[:message])
+      end
+
+      def title
+        commit_id = @commit[:id][0, 7]
+        if @commit[:url]
+          "<a href=\"#{@commit[:url]}\">#{commit_id}</a> #{message_title}"
+        else
+          "#{commit_id} #{message_title}"
+        end
+      end
+
+      def message_title
+        CGI.escape_html(first_line.strip)
+      end
+    end
+
+    # Class used to build Git payload
+    class Builder
+      def initialize(opts)
+        @repo = opts[:repo]
+        @ref = opts[:ref]
+        @before = opts[:before]
+        @after = opts[:after]
+        @opts = opts
+      end
+
+      def commits
+        @repo.commits_between(@before, @after).map do |commit|
+          {
+            url: if @opts[:commit_url] then @opts[:commit_url] % [commit.sha] end,
+            id: commit.sha,
+            message: commit.message,
+            author: {
+              name: commit.author.name,
+              email: commit.author.email
+            }
+          }
+        end
+      end
+
+      def ref_name
+        @ref.to_s.sub(/\Arefs\/(heads|tags)\//, '')
+      end
+
+      def to_hashes
+        commits.map do |commit|
+          Commit.new(external_thread_id, thread, @opts[:tags], commit).to_hash
+        end
+      end
+
+      private
+
+      def thread
+        @thread ||= {
+          title: thread_title,
+          external_url: @opts[:repo_url]
+        }
+      end
+
+      def permanent?
+        @permanent ||= @opts[:permanent_refs].select do |regex|
+          regex.match(@ref)
+        end.size > 0
+      end
+
+      def thread_title
+        action = if permanent?
+                   "updated"
+                 end
+        type = if @ref.match(%r(^refs/heads/))
+                 "branch"
+               else
+                 "tag"
+               end
+        [@opts[:repo_name], type, ref_name, action].compact.join(" ")
+      end
+
+      def external_thread_id
+        @external_thread_id ||=
+          if permanent?
+            SecureRandom.hex
+          else
+            @ref
+          end
       end
     end
   end
