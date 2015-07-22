@@ -6,7 +6,6 @@ require "flowdock/git/builder"
 module Flowdock
   class Git
     class TokenError < StandardError; end
-    API_ENDPOINT = "https://api.flowdock.com/v1/git"
 
     class << self
       def post(ref, from, to, options = {})
