@@ -13,9 +13,9 @@ Then, download the post-receive hook file to the hooks directory and make it exe
     $ wget -O hooks/post-receive https://raw.github.com/flowdock/flowdock-git-hook/master/post-receive
     $ chmod +x hooks/post-receive
 
-Configure your Flow API tokens to git configuration
+Set the source flow token given to you by the Flowdock git configuration service
 
-    $ git config flowdock.token <Flow API token>
+    $ git config flowdock.token <source flow token>
 
 After this, you should get updates from your git repo every time you push to it.
 
