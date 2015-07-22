@@ -55,7 +55,9 @@ module Flowdock
       end
 
       def body
-        @commit[:message][first_line.size .. -1]
+        content = @commit[:message][first_line.size..-1]
+        content.strip! if content
+        "<pre>#{content}</pre>" unless content.empty?
       end
 
       def first_line

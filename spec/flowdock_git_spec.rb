@@ -17,7 +17,7 @@ describe "Flowdock Git Hook" do
         name: "Antti Pitkanen",
         email: "antti@flowdock.com"
       },
-      body: "",
+      body: nil,
       flow_token: flowdock_token
     }
   }
