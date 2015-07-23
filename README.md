@@ -2,6 +2,10 @@
 
 Git Post-Receive hook for [Flowdock](http://flowdock.com).
 
+## Note
+
+Version 1.0. supports only source flow tokens. 0.x versions use a deprecated API which will be removed soon.
+
 ## Installation
 
 First, you need to install this gem. You need to have Ruby and Rubygems installed in your system.
