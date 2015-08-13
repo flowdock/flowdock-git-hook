@@ -54,7 +54,10 @@ module Flowdock
     end
 
     def repo
-      @repo ||= Grit::Repo.new(@options[:repo] || Dir.pwd)
+      @repo ||= Grit::Repo.new(
+        @options[:repo] || Dir.pwd,
+        is_bare: @options[:is_bare] || false
+      )
     end
 
     private
